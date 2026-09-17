@@ -78,6 +78,6 @@ jobs:
       - name: Update ECS Service
         run: |
           aws ecs update-service \
-            --cluster myapp-cluster \
-            --service myapp-service \
+            --cluster nginx-demo-cluster \
+            --service nginx-demo-service\
             --force-new-deployment
