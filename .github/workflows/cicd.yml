@@ -47,37 +47,82 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
+    concurrency:
+      group: deploy-nginx-demo
+      cancel-in-progress: false
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+      ECS_CLUSTER: nginx-demo-cluster
+      ECS_SERVICE: nginx-demo-service
+      CONTAINER_NAME: nginx
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker Image
+      - name: Build and push Docker image
+        id: image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t ${{ vars.ECR_REPOSITORY }} .
+          set -euo pipefail
 
-      - name: Tag Docker Image
-        run: |
-          docker tag ${{ vars.ECR_REPOSITORY }}:latest \
-          ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ github.sha }}
+          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Push Docker Image to ECR
-        run: |
-          docker push \
-          ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ github.sha }}
+          docker build --platform linux/amd64 -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
 
-      - name: Update ECS Service
+          echo "uri=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+
+      - name: Download current ECS task definition
         run: |
-          aws ecs update-service \
-            --cluster nginx-demo-cluster \
-            --service nginx-demo-service\
-            --force-new-deployment
+          set -euo pipefail
+
+          TASK_DEFINITION_ARN=$(aws ecs describe-services \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE" \
+            --query 'services[0].taskDefinition' \
+            --output text)
+
+          if [[ "$TASK_DEFINITION_ARN" == "None" || -z "$TASK_DEFINITION_ARN" ]]; then
+            echo "No task definition found. Check the ECS cluster and service."
+            exit 1
+          fi
+
+          aws ecs describe-task-definition \
+            --task-definition "$TASK_DEFINITION_ARN" \
+            --query 'taskDefinition' \
+            --output json > task-definition.json
+
+      - name: Update task definition with new image
+        id: task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.image.outputs.uri }}
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-definition.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
