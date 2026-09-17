@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DevOps and Cloud Engineer with 4+ years of experience in AWS, Azure, infrastructure automation, and reliable delivery.">
+  <title>Nyke | DevOps &amp; Cloud Engineer</title>
+
+  <style>
+    :root {
+      --bg: #0c1418;
+      --panel: #142127;
+      --text: #f1f5f3;
+      --muted: #adc0c5;
+      --accent: #b5ed83;
+      --line: #304047;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 25px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 6px;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: auto;
+      padding: 0 32px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 27px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: -.5px;
+      font-size: 20px;
+    }
+
+    .brand span { color: var(--accent); }
+
+    nav {
+      display: flex;
+      gap: 25px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    nav a:hover,
+    footer a:hover {
+      color: var(--accent);
+    }
+
+    .hero {
+      padding: 85px 0 65px;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 20px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 5.8vw, 70px);
+      line-height: 1.08;
+      letter-spacing: -3px;
+      margin: 0 0 24px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .intro {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 540px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .button {
+      padding: 11px 20px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .button:hover { filter: brightness(1.12); }
+
+    .terminal {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #101c21;
+      overflow: hidden;
+      box-shadow: 18px 18px 0 #17262c;
+    }
+
+    .terminal-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #62777e;
+    }
+
+    .terminal-label {
+      margin-left: auto;
+      font: 11px monospace;
+      color: var(--muted);
+    }
+
+    .terminal-body {
+      padding: 26px;
+      font: 13px/1.9 Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .terminal-body p { margin: 0 0 18px; }
+    .terminal-body p:last-child { margin-bottom: 0; }
+    .green { color: var(--accent); }
+    .muted { color: var(--muted); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 25px 0;
+      gap: 20px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 27px;
+      letter-spacing: -1px;
+    }
+
+    .stat span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    section {
+      padding: 55px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      gap: 20px;
+      align-items: baseline;
+      margin-bottom: 25px;
+    }
+
+    .number {
+      color: var(--accent);
+      font: 12px monospace;
+    }
+
+    h2 {
+      font-size: 28px;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin: 0 0 12px;
+      line-height: 1.35;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 20px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      font-size: 11px;
+      border: 1px solid #405159;
+      border-radius: 4px;
+      padding: 3px 8px;
+      color: #d1dfe2;
+    }
+
+    .experience {
+      display: grid;
+      grid-template-columns: 1fr 1.7fr;
+      gap: 40px;
+    }
+
+    .experience p {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 8px 0;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    li { padding: 0 0 12px 5px; }
+    li::marker { color: var(--accent); }
+
+    .project {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 40px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 30px;
+    }
+
+    .project p {
+      color: var(--muted);
+      margin: 0 0 18px;
+      font-size: 15px;
+    }
+
+    .contact {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .contact p {
+      color: var(--muted);
+      max-width: 580px;
+      font-size: 15px;
+    }
+
+    footer {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 35px;
+        padding: 50px 0;
+      }
+
+      .terminal { box-shadow: none; }
+      .grid { grid-template-columns: 1fr; }
+
+      .experience,
+      .project {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .contact {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .wrap { padding: 0 20px; }
+
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      nav { gap: 20px; }
+      h1 { letter-spacing: -2px; }
+      .stats { gap: 12px; }
+      .stat strong { font-size: 22px; }
+      .stat span { font-size: 11px; }
+      footer { flex-direction: column; }
+      .project { padding: 22px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="#home">Nyke<span> /</span></a>
+
+      <nav aria-label="Main navigation">
+        <a href="#expertise">Expertise</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="home">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">DevOps &amp; Cloud Engineer</p>
+
+          <h1>
+            Built to scale.<br>
+            <span>Designed to last.</span>
+          </h1>
+
+          <p class="intro">
+            4+ years building and automating cloud infrastructure on AWS
+            and Azure. Turning manual processes into reliable deployments,
+            observable systems, and repeatable operations.
+          </p>
+
+          <div class="actions">
+            <a class="button primary" href="#experience">
+              Explore my experience &#8599;
+            </a>
+            <a class="button" href="#contact">Get in touch</a>
+          </div>
+        </div>
+
+        <aside class="terminal" aria-label="Engineering focus">
+          <div class="terminal-top">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="terminal-label">engineering-profile.txt</span>
+          </div>
+
+          <div class="terminal-body">
+            <p>
+              <span class="green">$</span> cat engineering-profile.txt
+            </p>
+
+            <p>
+              <span class="muted">role</span>
+              &nbsp; DevOps &amp; Cloud Engineer<br>
+              <span class="muted">cloud</span>
+              &nbsp;AWS / Azure<br>
+              <span class="muted">focus</span>
+              &nbsp;Automate. Observe. Improve.
+            </p>
+
+            <p class="green">
+              Infrastructure as code<br>
+              Continuous delivery<br>
+              Reliable cloud operations
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="stats" aria-label="Career overview">
+        <div class="stat">
+          <strong>4+ years</strong>
+          <span>Engineering experience</span>
+        </div>
+
+        <div class="stat">
+          <strong>AWS + Azure</strong>
+          <span>Cloud infrastructure</span>
+        </div>
+
+        <div class="stat">
+          <strong>Code to cloud</strong>
+          <span>Automation &amp; delivery</span>
+        </div>
+      </div>
+
+      <section id="expertise">
+        <div class="section-head">
+          <span class="number">01 /</span>
+          <h2>What I bring</h2>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <h3>Cloud infrastructure</h3>
+            <p>
+              Secure, scalable environments built with reusable
+              infrastructure code and consistent configuration.
+            </p>
+            <div class="tags">
+              <span class="tag">AWS</span>
+              <span class="tag">Azure</span>
+              <span class="tag">Terraform</span>
+              <span class="tag">Ansible</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Deployment automation</h3>
+            <p>
+              Repeatable delivery workflows that connect source control,
+              automated pipelines, and container orchestration.
+            </p>
+            <div class="tags">
+              <span class="tag">GitHub Actions</span>
+              <span class="tag">Jenkins</span>
+              <span class="tag">Docker</span>
+              <span class="tag">Kubernetes</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Reliable operations</h3>
+            <p>
+              Monitoring, system hardening, and practical troubleshooting
+              to keep production services dependable.
+            </p>
+            <div class="tags">
+              <span class="tag">Linux</span>
+              <span class="tag">CloudWatch</span>
+              <span class="tag">Datadog</span>
+              <span class="tag">Grafana</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="experience">
+        <div class="section-head">
+          <span class="number">02 /</span>
+          <h2>Experience that connects the stack</h2>
+        </div>
+
+        <div class="experience">
+          <div>
+            <h3>
+              Infrastructure. Automation.<br>
+              Production support.
+            </h3>
+            <p>
+              Hands-on experience across development, testing, staging,
+              and production environments.
+            </p>
+            <p>
+              Structured problem-solving and clear communication
+              across engineering teams.
+            </p>
+          </div>
+
+          <ul>
+            <li>
+              Designed and maintained AWS and Azure infrastructure,
+              using Terraform modules and Ansible to standardize
+              provisioning and configuration.
+            </li>
+            <li>
+              Built CI/CD pipelines with GitHub Actions, Jenkins,
+              and Terraform Cloud; deployed containerized applications
+              with Docker and Kubernetes.
+            </li>
+            <li>
+              Administered RHEL, Ubuntu, and Windows systems, covering
+              patching, access controls, hardening, and production
+              troubleshooting.
+            </li>
+            <li>
+              Implemented monitoring with CloudWatch, Datadog, and
+              Grafana; automated log collection and health checks
+              with Bash.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="projects">
+        <div class="section-head">
+          <span class="number">03 /</span>
+          <h2>Applied AI, practical purpose</h2>
+        </div>
+
+        <article class="project">
+          <div>
+            <p class="eyebrow">Featured project</p>
+            <h3>Agentic AI Desk Assistant</h3>
+            <div class="tags">
+              <span class="tag">Amazon Bedrock</span>
+              <span class="tag">Agentic AI</span>
+              <span class="tag">LLMOps</span>
+            </div>
+          </div>
+
+          <div>
+            <p>
+              Built a Bedrock-powered assistant to answer company
+              policy and HR questions, helping employees access
+              relevant information through a conversational interface.
+            </p>
+            <p>
+              Combines cloud engineering experience with a practical
+              use case: making internal information easier to find.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <section id="contact" class="contact">
+        <div>
+          <p class="eyebrow">Let's connect</p>
+          <h2>Build something dependable.</h2>
+          <p>
+            Let's talk about cloud infrastructure, deployment automation,
+            and the engineering behind reliable systems.
+          </p>
+        </div>
+
+        <!-- Replace this with your actual email address. -->
+        <a class="button primary" href="mailto:you@example.com">
+          Email me &#8599;
+        </a>
+      </section>
+    </main>
+
+    <footer>
+      <span>Nyke · DevOps &amp; Cloud Engineer</span>
+      <a href="#home">Back to top &#8593;</a>
+    </footer>
+  </div>
+</body>
+</html>
