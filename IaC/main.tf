@@ -272,8 +272,11 @@ resource "aws_ecs_service" "nginx" {
 
   # Autoscaling manages the task count after initial deployment.
   lifecycle {
-    ignore_changes = [desired_count]
-  }
+    ignore_changes = [
+    desired_count,
+    task_definition
+   ]
+ }
 
   depends_on = [
     aws_lb_listener.http,
