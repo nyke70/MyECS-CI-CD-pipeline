@@ -1,66 +1,34 @@
-name: Build and Push Image
+name: Build and Deploy to ECS
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
 
+# Prevent overlapping runs from deploying simultaneously.
+concurrency:
+  group: nginx-demo-production
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  ECS_CLUSTER: nginx-demo-cluster
+  ECS_SERVICE: nginx-demo-service
+  CONTAINER_NAME: nginx
+
 jobs:
-
   build:
+    name: Build and push image to ECR
     runs-on: ubuntu-latest
 
-    steps:
-
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-          audience: sts.amazonaws.com
-
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-        id: login-ecr
-
-      - name: Build Docker Image
-        run: |
-          docker build -t ${{ vars.ECR_REPOSITORY }} .
-
-      - name: Tag Docker Image
-        run: |
-          docker tag ${{ vars.ECR_REPOSITORY }}:latest \
-          ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest
-
-      - name: Push Docker Image
-        run: |
-          docker push \
-          ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    permissions:
-      id-token: write
-      contents: read
-
-    concurrency:
-      group: deploy-nginx-demo
-      cancel-in-progress: false
-
-    env:
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-      ECS_CLUSTER: nginx-demo-cluster
-      ECS_SERVICE: nginx-demo-service
-      CONTAINER_NAME: nginx
+    outputs:
+      image_uri: ${{ steps.image.outputs.uri }}
 
     steps:
       - name: Checkout code
@@ -71,6 +39,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -90,6 +59,19 @@ jobs:
           docker push "$IMAGE_URI"
 
           echo "uri=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy image to ECS
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
 
       - name: Download current ECS task definition
         run: |
@@ -111,18 +93,30 @@ jobs:
             --query 'taskDefinition' \
             --output json > task-definition.json
 
-      - name: Update task definition with new image
+      - name: Update task definition with built image
         id: task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.image.outputs.uri }}
+          image: ${{ needs.build.outputs.image_uri }}
 
-      - name: Deploy to ECS
+      - name: Deploy new task definition to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-definition.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+
+      - name: Write deployment summary
+        env:
+          IMAGE_URI: ${{ needs.build.outputs.image_uri }}
+        run: |
+          {
+            echo "## ECS deployment completed"
+            echo "- Cluster: $ECS_CLUSTER"
+            echo "- Service: $ECS_SERVICE"
+            echo "- Image: $IMAGE_URI"
+            echo "- ECS service reached a stable state."
+          } >> "$GITHUB_STEP_SUMMARY"
